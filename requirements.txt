@@ -1,0 +1,7 @@
+psycopg2-binary
+pandas
+boto3
+python-dotenv
+pyarrow
+sqlalchemy
+awswrangler
