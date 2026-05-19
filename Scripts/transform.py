@@ -22,6 +22,23 @@ try:
         "appointments":"appointment_date",
         "test_results":"test_date",
     }
+    
+    type_config = {
+    'patient_id': 'int',
+    'appointment_id': 'int',
+    'center_id': 'int',
+    'result_id': 'int',
+    'test_id': 'int',
+    'payment_id': 'int',
+    'dob': 'date',
+    'created_at': 'timestamp',
+    'appointment_date': 'timestamp',
+    'test_date': 'timestamp',
+    'payment_date': 'timestamp',
+    'result_value': 'float',
+    'amount': 'float',
+    'price': 'float'
+    }
 
     objects = wr.s3.list_objects(f"s3://{bucket}/landing/", boto3_session=session)
     tables = list(set([obj.split('/')[4] for obj in objects]))
@@ -31,6 +48,15 @@ try:
         df = df.drop_duplicates()
         df = df.dropna(how='all')
         df.columns = df.columns.str.strip()
+
+        for col, dtype in type_config.items():
+            if col in df.columns:
+                if dtype == 'int':
+                    df[col] = pd.to_numeric(df[col], errors='coerce').astype('Int64')
+                elif dtype in ['date', 'timestamp']:
+                    df[col] = pd.to_datetime(df[col], errors='coerce')
+                elif dtype == 'float':
+                    df[col] = pd.to_numeric(df[col], errors='coerce')
 
         if table in partition_config:
             date_col = partition_config[table]

@@ -5,3 +5,5 @@ python-dotenv
 pyarrow
 sqlalchemy
 awswrangler
+google-api-python-client
+google-auth

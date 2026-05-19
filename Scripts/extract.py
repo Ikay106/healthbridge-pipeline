@@ -49,6 +49,7 @@ try:
             path = f"s3://{bucket}/landing/{table}",
             mode = 'overwrite',
             dataset = True,
+            index=False,
             boto3_session= session
         )
         print(f"{table} table has been added to landing page with {df.shape[0]} rows")
@@ -57,5 +58,8 @@ except Exception as e:
     print(e)
 
 finally:
-    cursor.close()
-    db_connection.close()    
+    try:
+        cursor.close()
+        db_connection.close()
+    except:
+        pass 
